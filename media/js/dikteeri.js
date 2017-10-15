@@ -116,7 +116,7 @@ function createDictate() {
       serverStatus : "wss://" + serverBaseUrl + "/ws/status",
       referenceHandler : "https://" + serverBaseUrl + "/dynamic/reference",
       
-      recorderWorkerPath : "/esine/media/js/libs/dictate.js/lib/recorderWorker.js",
+      recorderWorkerPath : "media/js/libs/dictate.js/lib/recorderWorker.js",
       onReadyForSpeech : function() {
         isConnected = true;
         __message("READY FOR SPEECH");
