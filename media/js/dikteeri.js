@@ -120,14 +120,14 @@ function createDictate() {
       },
 
       onPartialResults : function(hypos) {
-        hypText = prettyfyHyp(hypos[0].transcript, doUpper, doPrependSpace);
+        hypText = prettyfyHyp(hypos[0].transcript, true, false);
         console.log('Raw: ' + hypos);
         console.log('Pre: ' + hypos);
 
       },
 
       onResults : function(hypos) {
-        hypText = prettyfyHyp(hypos[0].transcript, doUpper, doPrependSpace);
+        hypText = prettyfyHyp(hypos[0].transcript, true, false);
           console.log('Raw: ' + hypos);
           console.log('Pre: ' + hypos);
 
