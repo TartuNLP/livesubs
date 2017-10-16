@@ -12,12 +12,6 @@ var isMicrophoneInitialized = false;
 var isConnected = false;
 var numWorkersAvailable = 0;
 
-
-var startPosition = 0;
-var endPosition = 0;
-var doUpper = false;
-var doPrependSpace = true;
-
 function capitaliseFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
@@ -111,100 +105,67 @@ var dictate = null;
   
 function createDictate() {
   serverBaseUrl = "bark.phon.ioc.ee:8443/konverentsid/duplex-speech-api";
+
   dictate = new Dictate({
       server : "wss://" + serverBaseUrl + "/ws/speech",
       serverStatus : "wss://" + serverBaseUrl + "/ws/status",
       referenceHandler : "https://" + serverBaseUrl + "/dynamic/reference",
-      
       recorderWorkerPath : "media/js/libs/dictate.js/lib/recorderWorker.js",
+
       onReadyForSpeech : function() {
         isConnected = true;
         __message("READY FOR SPEECH");
         $("#recbutton").addClass("playing");
         $("#helptext").html("Räägi");
-        startPosition = $("#trans").prop("selectionStart");
-        endPosition = startPosition;
-        var textBeforeCaret = $("#trans").val().slice(0, startPosition);
-        if ((textBeforeCaret.length == 0) || /\. *$/.test(textBeforeCaret) ||  /\n *$/.test(textBeforeCaret)) {
-          doUpper = true;
-        } else {
-          doUpper = false;
-        }
-        doPrependSpace = (textBeforeCaret.length > 0) && !(/\n *$/.test(textBeforeCaret));
       },
-      onEndOfSpeech : function() {
-        __message("END OF SPEECH");
-        $("#playbutton").addClass("disabled");
-      },
-      onEndOfSession : function() {
-        isConnected = false;
-        __message("END OF SESSION");
-        $("#recbutton").removeClass("playing");
-        updateDisabledState();      
-        $("#button-toolbar").removeClass("hidden");
-      },
-      onServerStatus : function(json) {
-        __serverStatus(json.num_workers_available);
-        numWorkersAvailable = json.num_workers_available;
-        updateDisabledState();
-      },
+
       onPartialResults : function(hypos) {
         hypText = prettyfyHyp(hypos[0].transcript, doUpper, doPrependSpace);
-        /*$.ajax({
-            type: "GET",
-            url: "https://bark.phon.ioc.ee/translate/eten?src=" + encodeURIComponent(hypText) + "&auth=adobe123&fast=1",
-            dataType: "json",
-            success: function (data) {
-                 $("#engtrans").val(data.tgt);
-                 console.log("translate result:" + data.tgt)
-            },
-        });*/
-        val = $("#trans").val();
-        $("#trans").val(val.slice(0, startPosition) + hypText + val.slice(endPosition));        
-        endPosition = startPosition + hypText.length;
-        $("#trans").prop("selectionStart", endPosition);
-        $("#trans").blur();
-        $("#trans").focus();
+        console.log('Raw: ' + hypos);
+        console.log('Pre: ' + hypos);
+
       },
+
       onResults : function(hypos) {
         hypText = prettyfyHyp(hypos[0].transcript, doUpper, doPrependSpace);
-        $.ajax({
-            type: "GET",
-            url: "https://bark.phon.ioc.ee/translate?src=" + encodeURIComponent(hypText) + "&auth=password&langpair=eten",
-            dataType: "json",
-            success: function (data) {
-                 $("#engtrans").val($("#engtrans").val() + ($("#engtrans").val() == "" ? "" : "\n") + data.tgt);
-                 $("#engtrans").blur();
-                 $("#engtrans").focus();
-            },
-        });
-        
-        val = $("#trans").val();
-        $("#trans").val(val.slice(0, startPosition) + hypText + val.slice(endPosition));        
-        startPosition = startPosition + hypText.length;			
-        endPosition = startPosition;
-        $("#trans").prop("selectionStart", endPosition);
-        if (/\. *$/.test(hypText) ||  /\n *$/.test(hypText)) {
-          doUpper = true;
-        } else {
-          doUpper = false;
-        }
-        doPrependSpace = (hypText.length > 0) && !(/\n *$/.test(hypText));
-        $("#trans").blur();
-        $("#trans").focus();
+          console.log('Raw: ' + hypos);
+          console.log('Pre: ' + hypos);
+
       },
+
+      onEndOfSpeech : function() {
+          __message("END OF SPEECH");
+          $("#playbutton").addClass("disabled");
+      },
+
+      onEndOfSession : function() {
+          isConnected = false;
+          __message("END OF SESSION");
+          $("#recbutton").removeClass("playing");
+          updateDisabledState();
+          $("#button-toolbar").removeClass("hidden");
+      },
+
+      onServerStatus : function(json) {
+          __serverStatus(json.num_workers_available);
+          numWorkersAvailable = json.num_workers_available;
+          updateDisabledState();
+      },
+
       onError : function(code, data) {
         dictate.cancel();
         __error(code, data);
         // TODO: show error in the GUI
       },
+
       onEvent : function(code, data) {
         __message(code, data);
-        if (code == 3 /* MSG_INIT_RECORDER */) {
+        if (code === 3 /* MSG_INIT_RECORDER */) {
           isMicrophoneInitialized = true;
           updateDisabledState();
         }
       },
+
       rafCallback : rafCallback,
       content_id : $("#content_id").html(),
       user_id : $("#user_id").html()
@@ -213,7 +174,7 @@ function createDictate() {
 
 // Private methods (called from the callbacks)
 function __message(code, data) {
-	console.log("msg: " + code + ": " + (data || ''));
+	//console.log("msg: " + code + ": " + (data || ''));
 }
 
 function __error(code, data) {
@@ -224,9 +185,6 @@ function __serverStatus(msg) {
 	serverStatusBar.innerHTML = msg;
 }
 
-function __updateTranscript(text) {
-	$("#trans").val(text);
-}
 
 // Public methods (called from the GUI)
 function toggleListening() {
@@ -244,10 +202,7 @@ function cancel() {
 }
 
 function clearTranscription() {	
-	$("#trans").val("");
-	// needed, otherwise selectionStart will retain its old value
-	$("#trans").prop("selectionStart", 0);
-	$("#trans").prop("selectionEnd", 0);
+
 }
 
 function resetText() {
@@ -256,13 +211,6 @@ function resetText() {
   $("#content_id").html(new_uuid);
   dictate.getConfig().content_id = new_uuid;
   $("#button-toolbar").addClass("hidden");
-  $("#submitButton").addClass("disabled");
-}
-
-function submitReference() {
-  dictate.submitReference($("#trans").val(), 
-    function successCallback(data, textStatus, jqHR) { $("#submitButton").notify("Tekst saadetud. Aitäh!", "success"); }, 
-    function errorCallback(data, textStatus, jqHR) { $("#submitButton").notify("Teksti saatmine ebaõnnestus!", "error"); });
   $("#submitButton").addClass("disabled");
 }
 
