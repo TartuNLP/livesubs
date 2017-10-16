@@ -12,94 +12,6 @@ var isMicrophoneInitialized = false;
 var isConnected = false;
 var numWorkersAvailable = 0;
 
-function capitaliseFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-function prettyfyHyp(text, doCapFirst, doPrependSpace) {
-    if (doCapFirst) {
-        text = capitaliseFirstLetter(text);
-    }
-    tokens = text.split(" ");
-    text = "";
-    if (doPrependSpace) {
-        text = " ";
-    }
-    doCapitalizeNext = false;
-    tokens.map(function (token) {
-        if (text.trim().length > 0) {
-            text = text + " ";
-        }
-        if (doCapitalizeNext) {
-            text = text + capitaliseFirstLetter(token);
-        } else {
-            text = text + token;
-        }
-        if (token == "." || /\n$/.test(token)) {
-            doCapitalizeNext = true;
-        } else {
-            doCapitalizeNext = false;
-        }
-    });
-
-    text = text.replace(/ ([,.!?:;])/g, "\$1");
-    text = text.replace(/ ?\n ?/g, "\n");
-    return text;
-}
-
-function updateDisabledState() {
-    var disabled = false;
-    var text = "Dikteerimiseks vajuta nuppu";
-    if (!isMicrophoneInitialized) {
-        disabled = true;
-        text = "Mikrofon initsialiseerimata";
-    } else if (isConnected) {
-        disabled = false;
-        text = "Räägi...";
-    } else if (numWorkersAvailable == 0) {
-        disabled = true;
-        text = "Server ülekoormatud või rivist väljas";
-    }
-    if (disabled) {
-        $("#recbutton").addClass("disabled");
-        $("#helptext").html(text);
-    } else {
-        $("#recbutton").removeClass("disabled");
-        $("#helptext").html(text);
-    }
-}
-
-function getAverage(array) {
-    var values = 0;
-    var average;
-    var length = array.length;
-    // get all the frequency amplitudes
-    for (var i = 0; i < length; i++) {
-        values += array[i];
-    }
-    average = values / length;
-    return average;
-}
-
-
-function rafCallback(time) {
-
-    var requestAnimationFrame = window.requestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        window.mozRequestAnimationFrame ||
-        window.oRequestAnimationFrame ||
-        window.msRequestAnimationFrame;
-    requestAnimationFrame(rafCallback, this);
-    if (isConnected) {
-        var freqByteData = new Uint8Array(userSpeechAnalyser.frequencyBinCount);
-        userSpeechAnalyser.getByteFrequencyData(freqByteData);
-        var average = getAverage(freqByteData);
-        $("#recbutton").css({"background-color": "rgba(255, 0, 0, " + Math.log(average) / Math.log(256) + " )"});
-    } else {
-        $("#recbutton").css({"background-color": "rgba(255, 0, 0, 0.0)"});
-    }
-}
-
 var dictate = null;
 
 
@@ -120,18 +32,28 @@ function createDictate() {
         },
 
         onPartialResults: function (hypos) {
-            hypText = prettyfyHyp(hypos[0].transcript, true, false);
             raw = JSON.stringify(hypos);
             console.log('Raw: ' + raw);
-            console.log('Pre: ' + hypText);
+            rawText = hypos[0].transcript;
 
+            $('#trans-text').prepend(
+                $('<div/>')
+                    .attr("id", uniqeId())
+                    .addClass("row sent-row")
+                    .append(
+                        $('<div/>')
+                            .addClass("col-xs-6")
+                            .text(rawText))
+                    .append(
+                        $('<div/>')
+                            .addClass("col-xs-6")
+                            .text(rawText))
+            );
         },
 
         onResults: function (hypos) {
-            hypText = prettyfyHyp(hypos[0].transcript, true, false);
             raw = JSON.stringify(hypos);
             console.log('Raw: ' + raw);
-            console.log('Pre: ' + hypText);
 
         },
 
@@ -172,6 +94,85 @@ function createDictate() {
         content_id: $("#content_id").html(),
         user_id: $("#user_id").html()
     });
+}
+
+
+function testClick() {
+    $('#trans-text').prepend(
+        $('<div/>')
+            .attr("id", uniqeId())
+            .addClass("row sent-row")
+            .append(
+                $('<div/>')
+                    .addClass("col-xs-6")
+                    .text("abc"))
+            .append(
+                $('<div/>')
+                    .addClass("col-xs-6")
+                    .text("abc"))
+    );
+}
+
+var uniqeId = (function () {
+    var i = 0;
+    return function () {
+        return 'row' + i++;
+    }
+})();
+
+function capitaliseFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function updateDisabledState() {
+    var disabled = false;
+    var text = "Dikteerimiseks vajuta nuppu";
+    if (!isMicrophoneInitialized) {
+        disabled = true;
+        text = "Mikrofon initsialiseerimata";
+    } else if (isConnected) {
+        disabled = false;
+        text = "Räägi...";
+    } else if (numWorkersAvailable == 0) {
+        disabled = true;
+        text = "Server ülekoormatud või rivist väljas";
+    }
+    if (disabled) {
+        $("#recbutton").addClass("disabled");
+        $("#helptext").html(text);
+    } else {
+        $("#recbutton").removeClass("disabled");
+        $("#helptext").html(text);
+    }
+}
+
+function getAverage(array) {
+    var values = 0;
+    var average;
+    var length = array.length;
+    // get all the frequency amplitudes
+    for (var i = 0; i < length; i++) {
+        values += array[i];
+    }
+    average = values / length;
+    return average;
+}
+
+function rafCallback(time) {
+    var requestAnimationFrame = window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame;
+    requestAnimationFrame(rafCallback, this);
+    if (isConnected) {
+        var freqByteData = new Uint8Array(userSpeechAnalyser.frequencyBinCount);
+        userSpeechAnalyser.getByteFrequencyData(freqByteData);
+        var average = getAverage(freqByteData);
+        $("#recbutton").css({"background-color": "rgba(255, 0, 0, " + Math.log(average) / Math.log(256) + " )"});
+    } else {
+        $("#recbutton").css({"background-color": "rgba(255, 0, 0, 0.0)"});
+    }
 }
 
 // Private methods (called from the callbacks)
