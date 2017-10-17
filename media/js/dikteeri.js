@@ -104,7 +104,7 @@ function createDictate() {
                             .text(currentSent))
                     .append(
                         $('<div/>')
-                            .addClass("col-xs-6")
+                            .addClass("col-xs-6"))
             );
 
 
