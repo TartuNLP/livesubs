@@ -77,7 +77,7 @@ div.sent-row {
     margin-bottom: 20px;
 }
 
-#trans-text {
+#trans-text, #complete-trans {
     font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
     font-size: 2rem;
     font-weight: bold;

@@ -37,6 +37,7 @@ function createDictate() {
             console.log('Raw response: ' + raw);
             rawText = hypos[0].transcript;
 
+            // TODO: teised kirjavahemärgid ka... peab ka kirjavahemärgid alles jätma
             var newSents = rawText.split(".").map(function (sent) {
                 return $.trim(sent);
             });
@@ -91,6 +92,26 @@ function createDictate() {
         onResults: function (hypos) {
             raw = JSON.stringify(hypos);
             console.log('Raw: ' + raw);
+
+            var newSents = rawText.split(".").map(function (sent) {
+                return $.trim(sent);
+            });
+
+            newSents.forEach(function (sent) {
+                $('#complete-trans').prepend(
+                    $('<div/>')
+                        .attr("id", uniqueRowId())
+                        .addClass("row sent-row")
+                        .append(
+                            $('<div/>')
+                                .addClass("col-xs-6")
+                                .text(sent))
+                        .append(
+                            $('<div/>')
+                                .addClass("col-xs-6")
+                                .text(sent))
+                );
+            });
 
         },
 
