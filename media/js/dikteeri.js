@@ -13,8 +13,8 @@ var isConnected = false;
 var numWorkersAvailable = 0;
 
 var dictate = null;
-var completedSents = ["abc"];
-var currentSentAsWords = [];
+var completedSents = ["abc", "bca mm wf"];
+var currentSent = "";
 
 function createDictate() {
     serverBaseUrl = "bark.phon.ioc.ee:8443/konverentsid/duplex-speech-api";
@@ -55,28 +55,37 @@ function createDictate() {
             console.log("All new sentences:");
             console.log(reallyNewSents);
 
-            currentSentAsWords = $.trim(lastSent).split(" ");
-            console.log("Current sentence words: ");
-            console.log(currentSentAsWords);
+            currentSent = $.trim(lastSent);
+            console.log("Current sentence: ");
+            console.log(currentSent);
 
-            completedSents = completedSents.concat(reallyNewSents);
-            console.log("Added " + reallyNewSents.length + " new sentences to collection. Completed sentences now:");
+            console.log("Completed sentences before change:");
+            console.log(completedSents);
+            completedSents = completedSents.slice(0, firstInvalid); // remove invalidated sents
+            completedSents = completedSents.concat(reallyNewSents); // add new sents
+            console.log("Removed " + (completedSents.length - firstInvalid) + " sentences, " +
+                "added " + reallyNewSents.length + " new sentences. " +
+                "Completed sentences now:");
             console.log(completedSents);
 
+            var showedSents = completedSents.concat([currentSent]);
+            $('#trans-text').empty();
+            showedSents.forEach(function (sent) {
+                $('#trans-text').prepend(
+                    $('<div/>')
+                        .attr("id", uniqueRowId())
+                        .addClass("row sent-row")
+                        .append(
+                            $('<div/>')
+                                .addClass("col-xs-6")
+                                .text(sent))
+                        .append(
+                            $('<div/>')
+                                .addClass("col-xs-6")
+                                .text(sent))
+                );
+            });
 
-            $('#trans-text').prepend(
-                $('<div/>')
-                    .attr("id", uniqueRowId())
-                    .addClass("row sent-row")
-                    .append(
-                        $('<div/>')
-                            .addClass("col-xs-6")
-                            .text(rawText))
-                    .append(
-                        $('<div/>')
-                            .addClass("col-xs-6")
-                            .text(rawText))
-            );
         },
 
         onResults: function (hypos) {
@@ -126,7 +135,7 @@ function createDictate() {
 
 
 function testClick() {
-    rawText = "abc. bca mm wf. uio ka. mma va am";
+    rawText = "abc. bla. ma";
 
     var newSents = rawText.split(".").map(function (sent) {
         return $.trim(sent);
@@ -146,12 +155,17 @@ function testClick() {
     console.log("All new sentences:");
     console.log(reallyNewSents);
 
-    currentSentAsWords = $.trim(lastSent).split(" ");
+    currentSent = $.trim(lastSent).split(" ");
     console.log("Current sentence words: ");
-    console.log(currentSentAsWords);
+    console.log(currentSent);
 
-    completedSents = completedSents.concat(reallyNewSents);
-    console.log("Added " + reallyNewSents.length + " new sentences to collection. Completed sentences now:");
+    console.log("Completed sentences before change:");
+    console.log(completedSents);
+    completedSents = completedSents.slice(0, firstInvalid); // remove invalidated sents
+    completedSents = completedSents.concat(reallyNewSents); // add new sents
+    console.log("Removed " + (completedSents.length - firstInvalid) + " sentences, " +
+        "added " + reallyNewSents.length + " new sentences. " +
+        "Completed sentences now:");
     console.log(completedSents);
 }
 
