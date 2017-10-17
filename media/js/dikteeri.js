@@ -201,7 +201,7 @@ function testClick() {
 
     $.ajax({
         type: "GET",
-        url: "https://api.neurotolge.ee/v1.0/translate?src=" + encodeURIComponent(sent) + "&auth=password&langpair=eten",
+        url: "https://api.neurotolge.ee/v1.0/translate?src=" + encodeURIComponent("ema") + "&auth=password&langpair=eten",
         dataType: "json",
         success: function (data) {
             console.error(data.tgt);
