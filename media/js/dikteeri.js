@@ -13,7 +13,8 @@ var isConnected = false;
 var numWorkersAvailable = 0;
 
 var dictate = null;
-
+var completedSents = ["abc"];
+var currentSentAsWords = [];
 
 function createDictate() {
     serverBaseUrl = "bark.phon.ioc.ee:8443/konverentsid/duplex-speech-api";
@@ -33,12 +34,39 @@ function createDictate() {
 
         onPartialResults: function (hypos) {
             raw = JSON.stringify(hypos);
-            console.log('Raw: ' + raw);
+            console.log('Raw response: ' + raw);
             rawText = hypos[0].transcript;
+
+            var newSents = rawText.split(".").map(function (sent) {
+                return $.trim(sent);
+            });
+            var lastSent = newSents.pop();
+
+            var firstInvalid = newSents.length;
+            for (var i = 0; i < newSents.length; i++) {
+                if ($.inArray(newSents[i], completedSents) === -1) {
+                    firstInvalid = i;
+                    console.log("Found first new sentence: newSents[" + i + "] = " + newSents[i]);
+                    break;
+                }
+            }
+
+            var reallyNewSents = newSents.slice(firstInvalid);
+            console.log("All new sentences:");
+            console.log(reallyNewSents);
+
+            currentSentAsWords = $.trim(lastSent).split(" ");
+            console.log("Current sentence words: ");
+            console.log(currentSentAsWords);
+
+            completedSents = completedSents.concat(reallyNewSents);
+            console.log("Added " + reallyNewSents.length + " new sentences to collection. Completed sentences now:");
+            console.log(completedSents);
+
 
             $('#trans-text').prepend(
                 $('<div/>')
-                    .attr("id", uniqeId())
+                    .attr("id", uniqueRowId())
                     .addClass("row sent-row")
                     .append(
                         $('<div/>')
@@ -98,22 +126,36 @@ function createDictate() {
 
 
 function testClick() {
-    $('#trans-text').prepend(
-        $('<div/>')
-            .attr("id", uniqeId())
-            .addClass("row sent-row")
-            .append(
-                $('<div/>')
-                    .addClass("col-xs-6")
-                    .text("abc"))
-            .append(
-                $('<div/>')
-                    .addClass("col-xs-6")
-                    .text("abc"))
-    );
+    rawText = "abc. bca mm wf. uio ka. mma va am";
+
+    var newSents = rawText.split(".").map(function (sent) {
+        return $.trim(sent);
+    });
+    var lastSent = newSents.pop();
+
+    var firstInvalid = newSents.length;
+    for (var i = 0; i < newSents.length; i++) {
+        if ($.inArray(newSents[i], completedSents) === -1) {
+            firstInvalid = i;
+            console.log("Found first new sentence: newSents[" + i + "] = " + newSents[i]);
+            break;
+        }
+    }
+
+    var reallyNewSents = newSents.slice(firstInvalid);
+    console.log("All new sentences:");
+    console.log(reallyNewSents);
+
+    currentSentAsWords = $.trim(lastSent).split(" ");
+    console.log("Current sentence words: ");
+    console.log(currentSentAsWords);
+
+    completedSents = completedSents.concat(reallyNewSents);
+    console.log("Added " + reallyNewSents.length + " new sentences to collection. Completed sentences now:");
+    console.log(completedSents);
 }
 
-var uniqeId = (function () {
+var uniqueRowId = (function () {
     var i = 0;
     return function () {
         return 'row' + i++;
@@ -133,7 +175,7 @@ function updateDisabledState() {
     } else if (isConnected) {
         disabled = false;
         text = "Räägi...";
-    } else if (numWorkersAvailable == 0) {
+    } else if (numWorkersAvailable === 0) {
         disabled = true;
         text = "Server ülekoormatud või rivist väljas";
     }
@@ -210,7 +252,7 @@ function clearTranscription() {
 
 function resetText() {
     clearTranscription();
-    var new_uuid = uuid()
+    var new_uuid = uuid();
     $("#content_id").html(new_uuid);
     dictate.getConfig().content_id = new_uuid;
     $("#button-toolbar").addClass("hidden");
@@ -234,7 +276,7 @@ function bookmarkletReturnResult() {
 $(document).ready(function () {
     $("#show_once_message").cookieBar({closeButton: '#show_once_message_close_button'});
     $("#content_id").html(uuid());
-    user_id = $.cookie('dikteeri_user_uuid')
+    user_id = $.cookie('dikteeri_user_uuid');
     if (!user_id) {
         user_id = uuid();
         $.cookie('dikteeri_user_uuid', user_id, {expires: 5 * 365, path: '/'});
