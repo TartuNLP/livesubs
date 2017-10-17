@@ -199,36 +199,14 @@ function createDictate() {
 function testClick() {
     rawText = "abc. bla. ma";
 
-    var newSents = rawText.split(".").map(function (sent) {
-        return $.trim(sent);
+    $.ajax({
+        type: "GET",
+        url: "https://api.neurotolge.ee/v1.0/translate?src=" + encodeURIComponent(sent) + "&auth=password&langpair=eten",
+        dataType: "json",
+        success: function (data) {
+            console.error(data.tgt);
+        },
     });
-    var lastSent = newSents.pop();
-
-    var firstInvalid = newSents.length;
-    for (var i = 0; i < newSents.length; i++) {
-        if ($.inArray(newSents[i], completedSents) === -1) {
-            firstInvalid = i;
-            console.log("Found first new sentence: newSents[" + i + "] = " + newSents[i]);
-            break;
-        }
-    }
-
-    var reallyNewSents = newSents.slice(firstInvalid);
-    console.log("All new sentences:");
-    console.log(reallyNewSents);
-
-    currentSent = $.trim(lastSent).split(" ");
-    console.log("Current sentence words: ");
-    console.log(currentSent);
-
-    console.log("Completed sentences before change:");
-    console.log(completedSents);
-    completedSents = completedSents.slice(0, firstInvalid); // remove invalidated sents
-    completedSents = completedSents.concat(reallyNewSents); // add new sents
-    console.log("Removed " + (completedSents.length - firstInvalid) + " sentences, " +
-        "added " + reallyNewSents.length + " new sentences. " +
-        "Completed sentences now:");
-    console.log(completedSents);
 }
 
 var uniqueId = (function () {
