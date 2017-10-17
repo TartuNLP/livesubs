@@ -69,23 +69,44 @@ function createDictate() {
                 "Completed sentences now:");
             console.log(completedSents);
 
-            var showedSents = completedSents.concat([currentSent]);
+
             $('#trans-text').empty();
-            showedSents.forEach(function (sent) {
+
+            completedSents.forEach(function (sent) {
+                var rowId = uniqueId();
+
                 $('#trans-text').prepend(
                     $('<div/>')
-                        .attr("id", uniqueRowId())
+                        .attr("id", "row" + rowId)
                         .addClass("row sent-row")
                         .append(
                             $('<div/>')
-                                .addClass("col-xs-6")
+                                .addClass("col-xs-6 src")
                                 .text(sent))
                         .append(
                             $('<div/>')
-                                .addClass("col-xs-6")
-                                .text(sent))
+                                .addClass("col-xs-6 tgt" + rowId)
+                                .text("..."))
                 );
+
+                // mock tõlkerequest
+                $('.tgt' + rowId).text("blabla");
             });
+
+            // current sentence (no translation)
+            $('#trans-text').prepend(
+                $('<div/>')
+                    .attr("id", uniqueId())
+                    .addClass("row sent-row")
+                    .append(
+                        $('<div/>')
+                            .addClass("col-xs-6")
+                            .text(currentSent))
+                    .append(
+                        $('<div/>')
+                            .addClass("col-xs-6")
+            );
+
 
         },
 
@@ -102,19 +123,24 @@ function createDictate() {
             currentSent = "";
 
             newSents.forEach(function (sent) {
+                var rowId = uniqueId();
+
                 $('#complete-trans').prepend(
                     $('<div/>')
-                        .attr("id", uniqueRowId())
+                        .attr("id", "row" + rowId)
                         .addClass("row sent-row")
                         .append(
                             $('<div/>')
-                                .addClass("col-xs-6")
+                                .addClass("col-xs-6 src")
                                 .text(sent))
                         .append(
                             $('<div/>')
-                                .addClass("col-xs-6")
-                                .text(sent))
+                                .addClass("col-xs-6 tgt" + rowId)
+                                .text("..."))
                 );
+
+                // mock tõlkerequest
+                $('.tgt' + rowId).text("blabla");
             });
 
         },
@@ -194,10 +220,10 @@ function testClick() {
     console.log(completedSents);
 }
 
-var uniqueRowId = (function () {
+var uniqueId = (function () {
     var i = 0;
     return function () {
-        return 'row' + i++;
+        return i++;
     }
 })();
 
