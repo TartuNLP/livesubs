@@ -97,6 +97,10 @@ function createDictate() {
                 return $.trim(sent);
             });
 
+            $('#trans-text').empty();
+            completedSents = [];
+            currentSent = "";
+
             newSents.forEach(function (sent) {
                 $('#complete-trans').prepend(
                     $('<div/>')
