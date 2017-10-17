@@ -89,14 +89,19 @@ function createDictate() {
                                 .text("..."))
                 );
 
-                // mock tõlkerequest
-                $('.tgt' + rowId).text("blabla");
+                $.ajax({
+                    type: "GET",
+                    url: "https://api.neurotolge.ee/v1.0/translate?src=" + encodeURIComponent(sent) + "&auth=password&langpair=eten",
+                    dataType: "json",
+                    success: function (data) {
+                        $('.tgt' + rowId).text(data.tgt);
+                    },
+                });
             });
 
             // current sentence (no translation)
             $('#trans-text').prepend(
                 $('<div/>')
-                    .attr("id", uniqueId())
                     .addClass("row sent-row")
                     .append(
                         $('<div/>')
@@ -139,8 +144,14 @@ function createDictate() {
                                 .text("..."))
                 );
 
-                // mock tõlkerequest
-                $('.tgt' + rowId).text("blabla");
+                $.ajax({
+                    type: "GET",
+                    url: "https://api.neurotolge.ee/v1.0/translate?src=" + encodeURIComponent(sent) + "&auth=password&langpair=eten",
+                    dataType: "json",
+                    success: function (data) {
+                        $('.tgt' + rowId).text(data.tgt);
+                    },
+                });
             });
 
         },
