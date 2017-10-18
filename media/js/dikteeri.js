@@ -205,10 +205,10 @@ function testClick() {
         type: "GET",
         //url: "https://api.neurotolge.ee/v1.0/translate?src=" + encodeURIComponent("ema") + "&auth=password&langpair=eten",
         url: "https://urgas.ee/api",
-        dataType: "json",
+        //dataType: "json",
         success: function (data) {
-            console.error(data.tgt);
-        },
+            console.error(data);
+        }
     });
 }
 
