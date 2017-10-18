@@ -96,7 +96,7 @@ function createDictate() {
                     //dataType: "json",
                     success: function (data) {
                         $('.tgt' + rowId).text(data);
-                    },
+                    }
                 });
             });
 
