@@ -1,19 +1,15 @@
-// Global UI elements:
-//  - log: event log
-//  - trans: transcription window
 
-// Global objects:
-//  - isConnected: true iff we are connected to a worker
-//  - tt: simple structure for managing the list of hypotheses
-//  - dictate: dictate object with control methods 'init', 'startListening', ...
-//       and event callbacks onResults, onError, ...
+var translationCacheSize = 50;
+var translationCache = new lru(translationCacheSize);
+var cacheMisses = 0;
+var totalQueries = 0;
 
 var isMicrophoneInitialized = false;
 var isConnected = false;
 var numWorkersAvailable = 0;
 
 var dictate = null;
-var completedSents = ["abc", "bca mm wf"];
+var completedSents = [];
 var currentSent = "";
 
 function createDictate() {
@@ -182,25 +178,52 @@ function createDictate() {
 function testClick() {
     rawText = "abc. bla. ma";
 
-    parseToSents("Et hoida neid ");
+    var cache = new lru(3);
+    var a = cache.get(2);
+    console.log("a: " + a);
+    cache.set(1, 3);
+    cache.set(100, 100);
+    cache.set(200, 100);
+    cache.set(300, 200);
+    console.log(cache.get(1));
+    console.log(cache.get(200));
 
 }
 
 function translateAsync(src, elementClassname) {
+    console.debug("Translating: " + src);
 
-    // TODO: cache
+    function successCallback(translation) {
+        $('.' + elementClassname).text(translation);
+    }
 
-    $.ajax({
-        type: "GET",
-        url: "https://api.neurotolge.ee/v1.0/translate?src=" + encodeURIComponent(src) + "&auth=password&langpair=eten",
-        dataType: "json",
-        success: function (data) {
-            $('.' + elementClassname).text(data.tgt);
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            console.error(textStatus + ' | ' + errorThrown);
-        }
-    });
+    var cacheResult = translationCache.get(src);
+    if (cacheResult !== undefined) {
+        successCallback(cacheResult);
+        console.debug("Cache hit!");
+    } else {
+        console.debug("Cache miss!");
+        cacheMisses++;
+        $.ajax({
+            type: "GET",
+            url: "https://api.neurotolge.ee/v1.0/translate?src=" + encodeURIComponent(src) + "&auth=password&langpair=eten",
+            dataType: "json",
+            success: function (data) {
+                successCallback(data.tgt);
+                translationCache.set(src, data.tgt);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error(textStatus + ' | ' + errorThrown);
+            }
+        });
+    }
+
+    totalQueries++;
+    if (totalQueries % 10 === 0) {
+        console.info("================================");
+        console.info("Cache miss rate: " + (cacheMisses / totalQueries * 100) + "%");
+        console.info("================================");
+    }
 }
 
 function parseToSents(str) {
