@@ -182,15 +182,7 @@ function createDictate() {
 function testClick() {
     rawText = "abc. bla. ma";
 
-    $.ajax({
-        type: "GET",
-        url: "https://api.neurotolge.ee/v1.0/translate?src=" + encodeURIComponent("some") + "&auth=password&langpair=eten",
-        //url: "https://urgas.ee/api",
-        dataType: "json",
-        success: function (data) {
-            console.log(data);
-        }
-    });
+    parseToSents("abc ");
 
 }
 
@@ -213,6 +205,7 @@ function translateAsync(src, elementClassname) {
 
 function parseToSents(str) {
     console.debug(str);
+    console.debug(typeof str);
     console.debug(str.match(/(.+?[.?!] |.+?$)/g));
     return str.match(/(.+?[.?!] |.+?$)/g).map(function (sent) {
         return $.trim(sent);
