@@ -33,41 +33,37 @@ function createDictate() {
         },
 
         onPartialResults: function (hypos) {
-            raw = JSON.stringify(hypos);
-            console.log('Raw response: ' + raw);
-            rawText = hypos[0].transcript;
+            var rawText = hypos[0].transcript;
+            console.debug("Partial results raw text: " + rawText);
 
-            // TODO: teised kirjavahemärgid ka... peab ka kirjavahemärgid alles jätma
-            var newSents = rawText.split(".").map(function (sent) {
-                return $.trim(sent);
-            });
+            var newSents = parseToSents(rawText);
             var lastSent = newSents.pop();
 
             var firstInvalid = newSents.length;
             for (var i = 0; i < newSents.length; i++) {
                 if ($.inArray(newSents[i], completedSents) === -1) {
                     firstInvalid = i;
-                    console.log("Found first new sentence: newSents[" + i + "] = " + newSents[i]);
+                    console.debug("Found first new sentence: newSents[" + i + "] = " + newSents[i]);
                     break;
                 }
             }
 
             var reallyNewSents = newSents.slice(firstInvalid);
-            console.log("All new sentences:");
-            console.log(reallyNewSents);
+            console.debug("All new sentences:");
+            console.debug(reallyNewSents);
 
             currentSent = $.trim(lastSent);
-            console.log("Current sentence: ");
-            console.log(currentSent);
+            console.debug("Current sentence: ");
+            console.debug(currentSent);
 
-            console.log("Completed sentences before change:");
-            console.log(completedSents);
+            console.debug("Completed sentences before change:");
+            console.debug(completedSents);
             completedSents = completedSents.slice(0, firstInvalid); // remove invalidated sents
             completedSents = completedSents.concat(reallyNewSents); // add new sents
-            console.log("Removed " + (completedSents.length - firstInvalid) + " sentences, " +
+            console.debug("Removed " + (completedSents.length - firstInvalid) + " sentences, " +
                 "added " + reallyNewSents.length + " new sentences. " +
                 "Completed sentences now:");
-            console.log(completedSents);
+            console.debug(completedSents);
 
 
             $('#trans-text').empty();
@@ -89,15 +85,7 @@ function createDictate() {
                                 .text("..."))
                 );
 
-                $.ajax({
-                    type: "GET",
-                    //url: "https://api.neurotolge.ee/v1.0/translate?src=" + encodeURIComponent(sent) + "&auth=password&langpair=eten",
-                    url: "https://urgas.ee/api",
-                    //dataType: "json",
-                    success: function (data) {
-                        $('.tgt' + rowId).text(data);
-                    }
-                });
+                translateAsync(sent, 'tgt' + rowId);
             });
 
             // current sentence (no translation)
@@ -113,16 +101,15 @@ function createDictate() {
                             .addClass("col-xs-6"))
             );
 
-
         },
 
         onResults: function (hypos) {
-            raw = JSON.stringify(hypos);
-            console.log('Raw: ' + raw);
+            var rawText = hypos[0].transcript;
+            console.debug("Final results raw text: " + rawText);
 
-            var newSents = rawText.split(".").map(function (sent) {
-                return $.trim(sent);
-            });
+            var newSents = parseToSents(rawText);
+            console.debug("Parsed into sentences:");
+            console.debug(newSents);
 
             $('#trans-text').empty();
             completedSents = [];
@@ -145,15 +132,7 @@ function createDictate() {
                                 .text("..."))
                 );
 
-                $.ajax({
-                    type: "GET",
-                    //url: "https://api.neurotolge.ee/v1.0/translate?src=" + encodeURIComponent(sent) + "&auth=password&langpair=eten",
-                    url: "https://urgas.ee/api",
-                    //dataType: "json",
-                    success: function (data) {
-                        $('.tgt' + rowId).text(data);
-                    },
-                });
+                translateAsync(sent, 'tgt' + rowId);
             });
 
         },
@@ -198,17 +177,43 @@ function createDictate() {
 }
 
 
+
+
 function testClick() {
     rawText = "abc. bla. ma";
 
     $.ajax({
         type: "GET",
-        //url: "https://api.neurotolge.ee/v1.0/translate?src=" + encodeURIComponent("ema") + "&auth=password&langpair=eten",
-        url: "https://urgas.ee/api",
-        //dataType: "json",
+        url: "https://api.neurotolge.ee/v1.0/translate?src=" + encodeURIComponent("some") + "&auth=password&langpair=eten",
+        //url: "https://urgas.ee/api",
+        dataType: "json",
         success: function (data) {
             console.log(data);
         }
+    });
+
+}
+
+function translateAsync(src, elementClassname) {
+
+    // TODO: cache
+
+    $.ajax({
+        type: "GET",
+        url: "https://api.neurotolge.ee/v1.0/translate?src=" + encodeURIComponent(src) + "&auth=password&langpair=eten",
+        dataType: "json",
+        success: function (data) {
+            $('.' + elementClassname).text(data.tgt);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.error(textStatus + ' | ' + errorThrown);
+        }
+    });
+}
+
+function parseToSents(str) {
+    return str.match(/(.+?[.?!] |.+?$)/g).map(function (sent) {
+        return $.trim(sent);
     });
 }
 
