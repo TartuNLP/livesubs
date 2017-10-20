@@ -212,7 +212,8 @@ function translateAsync(src, elementClassname) {
 }
 
 function parseToSents(str) {
-    console.debug("Parsing string to sentences: " + str);
+    console.debug(str);
+    console.debug(str.match(/(.+?[.?!] |.+?$)/g));
     return str.match(/(.+?[.?!] |.+?$)/g).map(function (sent) {
         return $.trim(sent);
     });
