@@ -182,7 +182,7 @@ function createDictate() {
 function testClick() {
     rawText = "abc. bla. ma";
 
-    parseToSents("abc ");
+    parseToSents("Et hoida neid ");
 
 }
 
@@ -205,11 +205,15 @@ function translateAsync(src, elementClassname) {
 
 function parseToSents(str) {
     console.debug(str);
-    console.debug(typeof str);
+    console.debug(toType(str));
     console.debug(str.match(/(.+?[.?!] |.+?$)/g));
     return str.match(/(.+?[.?!] |.+?$)/g).map(function (sent) {
         return $.trim(sent);
     });
+}
+
+var toType = function(obj) {
+    return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase()
 }
 
 var uniqueId = (function () {
