@@ -1,6 +1,6 @@
 var translationCacheSize = 50;
 var transConfidenceThreshold = -4.5;
-var scrollOffsetThresholdPx = 15;
+var scrollOffsetThresholdPx = 50;
 
 var translationCache = new lru(translationCacheSize);
 var cacheMisses = 0;
