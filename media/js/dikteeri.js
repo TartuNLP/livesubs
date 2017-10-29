@@ -204,7 +204,7 @@ function translateAsync(src, elementClassname) {
 
     var cacheResult = translationCache.get(src);
     if (cacheResult !== undefined) {
-        successCallback(cacheResult);
+        successCallback(cacheResult.tgt, cacheResult.qe);
         console.debug("Cache hit!");
     } else {
         console.debug("Cache miss!");
@@ -216,7 +216,7 @@ function translateAsync(src, elementClassname) {
             dataType: "json",
             success: function (data) {
                 successCallback(data.tgt, data.qualityestimation);
-                translationCache.set(src, data.tgt);
+                translationCache.set(src, Object.freeze({ tgt: data.tgt, qe:data.qualityestimation }));
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.error(textStatus + ' | ' + errorThrown);
