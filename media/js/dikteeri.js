@@ -64,7 +64,7 @@ function createDictate() {
             console.debug(completedSents);
 
             var transTextEl = $('#trans-text');
-            var transWrap = $('#trans');
+            var transWrap = $('#trans')[0];
             var isScrolledToBottom = transWrap.scrollHeight - transWrap.clientHeight <= transWrap.scrollTop + scrollOffsetThresholdPx;
             console.log("scrollHeight: " + transWrap.scrollHeight);
             console.log("clientHeight: " + transWrap.clientHeight);
