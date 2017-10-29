@@ -64,22 +64,32 @@
     background-size: 52px 52px;
 }
 
-textarea.form-control {
-    font-size: 20px;
+#helptext {
+    text-align: center;
+    color: #bcbcbc;
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-top: 15px;
+    margin-bottom: 40px;
 }
 
 a {
-    color: #1a0dab;
+    color: #bcbcbc;
 }
 
 a:hover {
-    color: #1a0dab;
+    color: #bcbcbc;
     text-decoration: underline;
 }
 
 .container {
     width: 100%;
     max-width: 970px;
+    margin-top: 40px;
+}
+
+.well {
+    background-color: #f2f2f2;
 }
 
 div.sent-row {
@@ -87,18 +97,26 @@ div.sent-row {
 }
 
 #trans-text, #complete-trans {
-    font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
-    font-size: 2rem;
-    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+#trans-text {
+    min-height: 250px;
 }
 
 #authors {
-    font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
-    font-weight: bold;
+    /*font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
+    font-weight: bold;*/
+    font-size: 1.2rem;
+    text-align: center;
 }
 
 .low-quality {
     color: #818181;
+}
+
+.red {
+    color: #eb3323 !important;
 }
 
 /* TODO: smaller screen sizes smaller font */

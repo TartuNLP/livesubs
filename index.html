@@ -26,44 +26,23 @@
 </head>
 
 <body class="live">
-
-
 <div class="container">
-    <div onclick="testClick()">test</div>
+    <!--<div onclick="testClick()">test</div>-->
     <div id="recbutton" class="disabled" onclick="toggleListening();"></div>
-    <p id="helptext" class="text-center tiny">Mikrofon initsialiseerimata</p>
+    <p id="helptext">Mikrofon initsialiseerimata</p>
     <div class="well">
         <div id="trans-text">
-            <div class="row sent-row">
-                <div class="col-xs-6">
-                    @@@@@@@@@@@ @@@@@@@@@@@@@@ @@@@@@@@@@@@@@@ @@@@@@@@@@ @@@@@@@@@@@@@@@@@ @@@@@@@@@@@@@@@@@@@@
-                </div>
-                <div class="col-xs-6">
-                    @@@@@@@@@@@ @@@@@@@@@@@@@@@ @@@@@@@@@@@ @@@@@@@@@@@@@@@@@@@@@@ @@@@@@@@@@@@@@@@@@ @@@@@@@@@@
-                </div>
-            </div>
 
-            <div class="row sent-row">
-                <div class="col-xs-6">
-                    @@@@@@@@@@@ @@@@@@@@@@@@@@ @@@@@@@@@@@@@@@ @@@@@@@@@@ @@@@@@@@@@@@@@@@@ @@@@@@@@@@@@@@@@@@@@
-                </div>
-                <div class="col-xs-6">
-                    @@@@@@@@@@@ @@@@@@@@@@@@@@@ @@@@@@@@@@@ @@@@@@@@@@@@@@@@@@@@@@ @@@@@@@@@@@@@@@@@@ @@@@@@@@@@
-                </div>
-            </div>
         </div>
         <div id="complete-trans">
         </div>
     </div>
     <div id="authors" class="row">
-        <div class="col-xs-6"><p><a href="http://www.phon.ioc.ee">TTÜ tarkvarateaduse instituut -- keeletehnoloogia laboratoorium</a></p></div>
-        <div class="col-xs-6"><p><a href="http://nlp.cs.ut.ee/">TÜ arvutiteaduse instituut -- keeletehnoloogia uurimisrühm</a></p></div>
+        <div class="col-xs-6 col-sm-4 col-sm-offset-1"><p><a href="http://www.phon.ioc.ee">Kõnetuvastus arendatud TTÜ tarkvarateaduse instituudi Foneetika ja kõnetehnoloogia laboris</a></p></div>
+        <div class="col-xs-6 col-sm-4 col-sm-offset-2"><p><a href="http://nlp.cs.ut.ee/">Masintõlge arendatud TÜ arvutiteaduse instituudi keeletehnoloogia uurimisrühmas</a></p></div>
     </div>
 
-    <hr/>
-    <p>Hetkel on serveris dikteerimiseks <span id="serverStatusBar">0</span> vaba slotti.</p>
-    <hr>
-</div> <!-- /container -->
+</div>
 
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>

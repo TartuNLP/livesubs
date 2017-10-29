@@ -146,7 +146,6 @@ function createDictate() {
         },
 
         onServerStatus: function (json) {
-            __serverStatus(json.num_workers_available);
             numWorkersAvailable = json.num_workers_available;
             updateDisabledState();
         },
@@ -252,23 +251,23 @@ function capitaliseFirstLetter(string) {
 
 function updateDisabledState() {
     var disabled = false;
-    var text = "Dikteerimiseks vajuta nuppu";
+    var text = "DIKTEERIMISEKS VAJUTA NUPPU";
     if (!isMicrophoneInitialized) {
         disabled = true;
-        text = "Mikrofon initsialiseerimata";
+        text = "MIKROFON INITSIALISEERIMATA";
     } else if (isConnected) {
         disabled = false;
-        text = "Räägi...";
+        text = "RÄÄGI...";
     } else if (numWorkersAvailable === 0) {
         disabled = true;
-        text = "Server ülekoormatud või rivist väljas";
+        text = "SERVER ON HÕIVATUD, PALUN TULGE HILJEM TAGASI";
     }
     if (disabled) {
         $("#recbutton").addClass("disabled");
-        $("#helptext").html(text);
+        $("#helptext").addClass("red").html(text);
     } else {
         $("#recbutton").removeClass("disabled");
-        $("#helptext").html(text);
+        $("#helptext").removeClass("red").html(text);
     }
 }
 
@@ -308,10 +307,6 @@ function __message(code, data) {
 
 function __error(code, data) {
     console.log("ERR: " + code + ": " + (data || ''))
-}
-
-function __serverStatus(msg) {
-    serverStatusBar.innerHTML = msg;
 }
 
 
