@@ -1,5 +1,6 @@
 var translationCacheSize = 50;
 var transConfidenceThreshold = -4.5;
+var scrollOffsetThresholdPx = 15;
 
 var translationCache = new lru(translationCacheSize);
 var cacheMisses = 0;
@@ -64,7 +65,7 @@ function createDictate() {
 
             var transTextEl = $('#trans-text');
             var transWrap = $('#trans');
-            var isScrolledToBottom = transWrap.scrollHeight - transWrap.clientHeight <= transWrap.scrollTop + 1;
+            var isScrolledToBottom = transWrap.scrollHeight - transWrap.clientHeight <= transWrap.scrollTop + scrollOffsetThresholdPx;
 
             transTextEl.empty();
 
@@ -115,7 +116,7 @@ function createDictate() {
             console.debug(newSents);
 
             var transWrap = $('#trans');
-            var isScrolledToBottom = transWrap.scrollHeight - transWrap.clientHeight <= transWrap.scrollTop + 1;
+            var isScrolledToBottom = transWrap.scrollHeight - transWrap.clientHeight <= transWrap.scrollTop + scrollOffsetThresholdPx;
 
             $('#trans-text').empty();
             completedSents = [];
@@ -215,7 +216,7 @@ function translateAsync(src, elementClassname) {
         }
 
         var transWrap = $('#trans');
-        var isScrolledToBottom = transWrap.scrollHeight - transWrap.clientHeight <= transWrap.scrollTop + 1;
+        var isScrolledToBottom = transWrap.scrollHeight - transWrap.clientHeight <= transWrap.scrollTop + scrollOffsetThresholdPx;
 
         el.text(translation + " (" + qeScore.toFixed(2) + ")");
 
