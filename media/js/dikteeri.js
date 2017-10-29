@@ -1,4 +1,3 @@
-
 var translationCacheSize = 50;
 var transConfidenceThreshold = -4.5;
 
@@ -64,6 +63,8 @@ function createDictate() {
             console.debug(completedSents);
 
             var transTextEl = $('#trans-text');
+            var transWrap = $('#trans');
+            var isScrolledToBottom = transWrap.scrollHeight - transWrap.clientHeight <= transWrap.scrollTop + 1;
 
             transTextEl.empty();
 
@@ -100,6 +101,9 @@ function createDictate() {
                             .addClass("col-xs-6"))
             );
 
+            if (isScrolledToBottom) {
+                transWrap.scrollTop = transWrap.scrollHeight - transWrap.clientHeight;
+            }
         },
 
         onResults: function (hypos) {
@@ -109,6 +113,9 @@ function createDictate() {
             var newSents = parseToSents(rawText);
             console.debug("Parsed into sentences:");
             console.debug(newSents);
+
+            var transWrap = $('#trans');
+            var isScrolledToBottom = transWrap.scrollHeight - transWrap.clientHeight <= transWrap.scrollTop + 1;
 
             $('#trans-text').empty();
             completedSents = [];
@@ -134,12 +141,9 @@ function createDictate() {
                 translateAsync(sent, 'tgt' + rowId);
             });
 
-            var out = $('#trans');
-            var isScrolledToBottom = out.scrollHeight - out.clientHeight <= out.scrollTop + 1;
-            if(isScrolledToBottom) {
-                out.scrollTop = out.scrollHeight - out.clientHeight;
+            if (isScrolledToBottom) {
+                transWrap.scrollTop = transWrap.scrollHeight - transWrap.clientHeight;
             }
-
         },
 
         onEndOfSpeech: function () {
@@ -196,6 +200,7 @@ function testClick() {
 
 }
 
+
 function translateAsync(src, elementClassname) {
     console.debug("Translating: " + src);
 
@@ -208,7 +213,15 @@ function translateAsync(src, elementClassname) {
         if (qeScore < transConfidenceThreshold) {
             el.addClass("low-quality");
         }
+
+        var transWrap = $('#trans');
+        var isScrolledToBottom = transWrap.scrollHeight - transWrap.clientHeight <= transWrap.scrollTop + 1;
+
         el.text(translation + " (" + qeScore.toFixed(2) + ")");
+
+        if (isScrolledToBottom) {
+            transWrap.scrollTop = transWrap.scrollHeight - transWrap.clientHeight;
+        }
     }
 
     var cacheResult = translationCache.get(src);
@@ -221,11 +234,11 @@ function translateAsync(src, elementClassname) {
         $.ajax({
             type: "GET",
             url: "https://api.neurotolge.ee/v1.0/translate?src=" + encodeURIComponent(src) +
-                "&auth=password&langpair=eten&qualityestimation=1",
+            "&auth=password&langpair=eten&qualityestimation=1",
             dataType: "json",
             success: function (data) {
                 successCallback(data.tgt, data.qualityestimation);
-                translationCache.set(src, Object.freeze({ tgt: data.tgt, qe:data.qualityestimation }));
+                translationCache.set(src, Object.freeze({tgt: data.tgt, qe: data.qualityestimation}));
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.error(textStatus + ' | ' + errorThrown);
