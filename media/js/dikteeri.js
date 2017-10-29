@@ -119,7 +119,7 @@ function createDictate() {
             console.debug("Parsed into sentences:");
             console.debug(newSents);
 
-            var transWrap = $('#trans');
+            var transWrap = $('#trans')[0];
             var isScrolledToBottom = transWrap.scrollHeight - transWrap.clientHeight <= transWrap.scrollTop + scrollOffsetThresholdPx;
 
             $('#trans-text').empty();
@@ -219,7 +219,7 @@ function translateAsync(src, elementClassname) {
             el.addClass("low-quality");
         }
 
-        var transWrap = $('#trans');
+        var transWrap = $('#trans')[0];
         var isScrolledToBottom = transWrap.scrollHeight - transWrap.clientHeight <= transWrap.scrollTop + scrollOffsetThresholdPx;
 
         el.text(translation + " (" + qeScore.toFixed(2) + ")");
