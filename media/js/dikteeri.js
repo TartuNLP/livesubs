@@ -134,6 +134,12 @@ function createDictate() {
                 translateAsync(sent, 'tgt' + rowId);
             });
 
+            var out = $('#trans');
+            var isScrolledToBottom = out.scrollHeight - out.clientHeight <= out.scrollTop + 1;
+            if(isScrolledToBottom) {
+                out.scrollTop = out.scrollHeight - out.clientHeight;
+            }
+
         },
 
         onEndOfSpeech: function () {
