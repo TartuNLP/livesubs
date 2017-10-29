@@ -1,4 +1,7 @@
+
 var translationCacheSize = 50;
+var transConfidenceThreshold = -4.5;
+
 var translationCache = new lru(translationCacheSize);
 var cacheMisses = 0;
 var totalQueries = 0;
@@ -60,22 +63,23 @@ function createDictate() {
                 "Completed sentences now:");
             console.debug(completedSents);
 
+            var transTextEl = $('#trans-text');
 
-            $('#trans-text').empty();
+            transTextEl.empty();
 
             completedSents.forEach(function (sent) {
                 var rowId = uniqueId();
 
-                $('#trans-text').prepend(
-                    $('<div/>')
+                transTextEl.append(
+                    $('<div></div>')
                         .attr("id", "row" + rowId)
                         .addClass("row sent-row")
                         .append(
-                            $('<div/>')
+                            $('<div></div>')
                                 .addClass("col-xs-6 src")
                                 .text(sent))
                         .append(
-                            $('<div/>')
+                            $('<div></div>')
                                 .addClass("col-xs-6 tgt" + rowId)
                                 .text("..."))
                 );
@@ -84,15 +88,15 @@ function createDictate() {
             });
 
             // current sentence (no translation)
-            $('#trans-text').prepend(
-                $('<div/>')
+            transTextEl.append(
+                $('<div></div>')
                     .addClass("row sent-row")
                     .append(
-                        $('<div/>')
+                        $('<div></div>')
                             .addClass("col-xs-6")
                             .text(currentSent))
                     .append(
-                        $('<div/>')
+                        $('<div></div>')
                             .addClass("col-xs-6"))
             );
 
@@ -113,16 +117,16 @@ function createDictate() {
             newSents.forEach(function (sent) {
                 var rowId = uniqueId();
 
-                $('#complete-trans').prepend(
-                    $('<div/>')
+                $('#complete-trans').append(
+                    $('<div></div>')
                         .attr("id", "row" + rowId)
                         .addClass("row sent-row")
                         .append(
-                            $('<div/>')
+                            $('<div></div>')
                                 .addClass("col-xs-6 src")
                                 .text(sent))
                         .append(
-                            $('<div/>')
+                            $('<div></div>')
                                 .addClass("col-xs-6 tgt" + rowId)
                                 .text("..."))
                 );
@@ -195,7 +199,7 @@ function translateAsync(src, elementClassname) {
         console.debug("qeScore: " + qeScore);
         console.debug("qeScore(2): " + qeScore.toFixed(2));
         var el = $('.' + elementClassname);
-        if (qeScore < -3) {
+        if (qeScore < transConfidenceThreshold) {
             el.addClass("low-quality");
         }
         el.text(translation + " (" + qeScore.toFixed(2) + ")");
@@ -315,7 +319,7 @@ function toggleListening() {
     if (isConnected) {
         dictate.stopListening();
         $("#recbutton").addClass("disabled");
-        $("#helptext").html("Oota..");
+        $("#helptext").html("OOTA..");
     } else {
         dictate.startListening();
     }
@@ -361,11 +365,6 @@ $(document).ready(function () {
         $.cookie('dikteeri_user_uuid', user_id, {expires: 5 * 365, path: '/'});
     }
     $("#user_id").html(user_id);
-    $("#trans").on('input', function () {
-        $("#submitButton").removeClass("disabled");
-    });
     createDictate();
     dictate.init();
-
-
 });

@@ -68,9 +68,14 @@
     text-align: center;
     color: #bcbcbc;
     font-weight: bold;
-    font-size: 1.5rem;
+    font-size: 15px;
+    line-height: 15px;
     margin-top: 15px;
     margin-bottom: 40px;
+}
+
+p {
+    margin-bottom: 10px;
 }
 
 a {
@@ -85,7 +90,8 @@ a:hover {
 .container {
     width: 100%;
     max-width: 970px;
-    margin-top: 40px;
+    padding-top: 40px;
+    height: 100vh;
 }
 
 .well {
@@ -100,13 +106,17 @@ div.sent-row {
     font-size: 1.8rem;
 }
 
-#complete-trans {
-    min-height: 250px;
+#trans {
+    /* 100% - mic button - help text - trans bottom margin - authors 3 rows - authors p bottom margin */
+    height: calc(100% - 60px - 70px - 20px - 48px - 10px);
+    overflow-y: auto;
 }
 
 #authors {
-    font-size: 1.2rem;
+    font-size: 12px;
+    line-height: 16px;
     text-align: center;
+    height: 48px;
 }
 
 .low-quality {
@@ -117,5 +127,5 @@ div.sent-row {
     color: #eb3323 !important;
 }
 
-/* TODO: smaller screen sizes smaller font */
+
 
