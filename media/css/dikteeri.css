@@ -97,22 +97,20 @@ div.sent-row {
 }
 
 #trans-text, #complete-trans {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
 }
 
-#trans-text {
+#complete-trans {
     min-height: 250px;
 }
 
 #authors {
-    /*font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
-    font-weight: bold;*/
     font-size: 1.2rem;
     text-align: center;
 }
 
 .low-quality {
-    color: #818181;
+    color: #9c9c9c;
 }
 
 .red {
