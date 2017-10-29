@@ -1,4 +1,3 @@
-
 var translationCacheSize = 50;
 var translationCache = new lru(translationCacheSize);
 var cacheMisses = 0;
@@ -173,8 +172,6 @@ function createDictate() {
 }
 
 
-
-
 function testClick() {
     rawText = "abc. bla. ma";
 
@@ -193,8 +190,13 @@ function testClick() {
 function translateAsync(src, elementClassname) {
     console.debug("Translating: " + src);
 
-    function successCallback(translation) {
-        $('.' + elementClassname).text(translation);
+    function successCallback(translation, qeString) {
+        var qeScore = parseFloat(qeString);
+        var el = $('.' + elementClassname);
+        if (qeScore < -4.5) {
+            el.addClass("low-quality");
+        }
+        el.text(translation + " (" + qeScore.toFixed(2) + ")");
     }
 
     var cacheResult = translationCache.get(src);
@@ -206,10 +208,11 @@ function translateAsync(src, elementClassname) {
         cacheMisses++;
         $.ajax({
             type: "GET",
-            url: "https://api.neurotolge.ee/v1.0/translate?src=" + encodeURIComponent(src) + "&auth=password&langpair=eten",
+            url: "https://api.neurotolge.ee/v1.0/translate?src=" + encodeURIComponent(src) +
+                "&auth=password&langpair=eten&qualityestimation=1",
             dataType: "json",
             success: function (data) {
-                successCallback(data.tgt);
+                successCallback(data.tgt, data.qualityestimation);
                 translationCache.set(src, data.tgt);
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -222,7 +225,6 @@ function translateAsync(src, elementClassname) {
     if (totalQueries % 10 === 0) {
         console.info("================================");
         console.info("Cache miss rate: " + (cacheMisses / totalQueries * 100) + "%");
-        console.info("================================");
     }
 }
 

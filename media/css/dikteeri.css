@@ -97,5 +97,9 @@ div.sent-row {
     font-weight: bold;
 }
 
+.low-quality {
+    color: #818181;
+}
+
 /* TODO: smaller screen sizes smaller font */
 
