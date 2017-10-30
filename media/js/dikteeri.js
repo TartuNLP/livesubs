@@ -206,10 +206,7 @@ function translateAsync(src, elementClassname) {
     console.debug("Translating: " + src);
 
     function successCallback(translation, qeString) {
-        console.debug("qeString: " + qeString);
         var qeScore = parseFloat(qeString);
-        console.debug("qeScore: " + qeScore);
-        console.debug("qeScore(2): " + qeScore.toFixed(2));
         var el = $('.' + elementClassname);
         if (qeScore < transConfidenceThreshold) {
             el.addClass("low-quality");
