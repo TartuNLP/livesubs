@@ -102,7 +102,6 @@ function createDictate() {
                             .addClass("col-xs-6"))
             );
 
-            console.log(isScrolledToBottom);
             if (isScrolledToBottom) {
                 transWrap.scrollTop = transWrap.scrollHeight - transWrap.clientHeight;
             }
