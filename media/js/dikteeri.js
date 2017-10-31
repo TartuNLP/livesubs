@@ -232,7 +232,7 @@ function translateAsync(src, elementClassname) {
         $.ajax({
             type: "GET",
             url: "https://api.neurotolge.ee/v1.0/translate?src=" + encodeURIComponent(src) +
-            "&auth=password&langpair=eten&qualityestimation=1",
+            "&auth=password&langpair=eten&qualityestimation=1&domain=livesubs&fast=1",
             dataType: "json",
             success: function (data) {
                 successCallback(data.tgt, data.qualityestimation);
