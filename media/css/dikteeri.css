@@ -116,7 +116,6 @@ div.sent-row {
     font-size: 12px;
     line-height: 16px;
     text-align: center;
-    height: 48px;
 }
 
 .low-quality {
@@ -128,4 +127,39 @@ div.sent-row {
 }
 
 
+@media only screen and (max-width: 443px) {
+    #trans {
+        height: calc(100% - 60px - 70px - 20px - 48px - 10px - 16px); /* authors 4 rows */
+    }
+}
+
+@media only screen and (max-height: 750px) {
+    .container {
+        padding-top: 20px;
+    }
+
+    #helptext {
+        margin-top: 7px;
+        margin-bottom: 20px;
+    }
+
+    #trans {
+        height: calc(100% - 60px - 42px - 20px - 48px - 10px); /* smaller margins */
+    }
+}
+
+@media only screen and (max-width: 443px) and (max-height: 750px) {
+    .container {
+        padding-top: 20px;
+    }
+
+    #helptext {
+        margin-top: 7px;
+        margin-bottom: 20px;
+    }
+
+    #trans {
+        height: calc(100% - 60px - 42px - 20px - 48px - 10px - 16px); /* smaller margins & authors 4 rows */
+    }
+}
 
