@@ -253,11 +253,13 @@
 				} else {
 					var res = JSON.parse(data);
 					if (res.status == 0) {
-						if (res.result) {
-							if (res.result.final) {
-								config.onResults(res.result.hypotheses);
-							} else {
-								config.onPartialResults(res.result.hypotheses);
+						if (res.hasOwnProperty("result")) {
+							if (res.result) {
+								if (res.result.final) {
+									config.onResults(res.result.hypotheses);
+								} else {
+									config.onPartialResults(res.result.hypotheses);
+								}
 							}
 						}
 					} else {
