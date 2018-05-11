@@ -253,10 +253,12 @@
 				} else {
 					var res = JSON.parse(data);
 					if (res.status == 0) {
-						if (res.result.final) {
-							config.onResults(res.result.hypotheses);
-						} else {
-							config.onPartialResults(res.result.hypotheses);
+						if (res.result) {
+							if (res.result.final) {
+								config.onResults(res.result.hypotheses);
+							} else {
+								config.onPartialResults(res.result.hypotheses);
+							}
 						}
 					} else {
 						config.onError(ERR_SERVER, 'Server error: ' + res.status + ': ' + getDescription(res.status));
