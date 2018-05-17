@@ -272,7 +272,7 @@ function capitaliseFirstLetter(string) {
 
 function updateDisabledState() {
     var disabled = false;
-    var text = "DIKTEERIMISEKS VAJUTA NUPPU";
+    var text = "K&AUML;IVITA AUTOMAATSEID SUBTIITREID";
     if (!isMicrophoneInitialized) {
         disabled = true;
         text = "MIKROFON INITSIALISEERIMATA";
