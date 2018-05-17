@@ -272,7 +272,7 @@ function capitaliseFirstLetter(string) {
 
 function updateDisabledState() {
     var disabled = false;
-    var text = "K&AUML;IVITA AUTOMAATSEID SUBTIITREID";
+    var text = "KÄIVITA AUTOMAATSEID SUBTIITREID";
     if (!isMicrophoneInitialized) {
         disabled = true;
         text = "MIKROFON INITSIALISEERIMATA";
